@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💡 胡思乱想工具箱</title>
+    <!-- 使用 Tailwind CSS 快速美化 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap');
+        body { 
+            font-family: 'Noto Sans SC', sans-serif; 
+            background-color: #0f172a; 
+            color: #f1f5f9;
+        }
+        .sidebar-link:hover {
+            background-color: #1e293b;
+            color: #ef4444;
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="flex min-h-screen">
+
+    <!-- 👈 侧边栏导航 -->
+    <aside class="w-72 bg-slate-900 border-r border-slate-800 hidden md:flex flex-col">
+        <div class="p-6">
+            <h2 class="text-xl font-bold text-red-500">🛠️ 实验室导航</h2>
+        </div>
+        <nav class="flex-1 px-4 space-y-2">
+            <a href="index.html" class="block p-3 rounded-lg bg-slate-800 text-red-400 font-bold">🏠 首页介绍</a>
+            <!-- 这里的 href 对应你即将创建的另外两个文件名 -->
+            <a href="housing.html" class="sidebar-link block p-3 rounded-lg text-slate-400 transition">🏠 住房主权量化</a>
+            <a href="divine.html" class="sidebar-link block p-3 rounded-lg text-slate-400 transition">🔮 赛博占卜</a>
+            <div class="p-3 text-slate-600 text-sm cursor-not-allowed">💼 职场自由度 (计划中)</div>
+        </nav>
+        <div class="p-6 text-xs text-slate-500 border-t border-slate-800">
+            © 2024 一名 00 后研究生的实验室
+        </div>
+    </aside>
+
+    <!-- 🏠 主内容区 -->
+    <main class="flex-1 p-6 md:p-16 overflow-y-auto">
+        <div class="max-w-3xl mx-auto">
+            <h1 class="text-4xl md:text-5xl font-bold mb-2">💡 胡思乱想工具箱</h1>
+            <p class="text-slate-500 mb-8 text-lg">Wild Ideas Toolbox v1.0</p>
+            
+            <hr class="border-slate-800 mb-10">
+
+            <div class="glass-card p-8 rounded-3xl shadow-2xl space-y-6">
+                <h2 class="text-2xl font-bold text-white">欢迎来到一名 00 后研究生的胡思乱想</h2>
+                
+                <p class="text-slate-400 leading-relaxed text-lg">
+                    这里存放着我关于生活的种种稀奇古怪的想法。我们不替你做决策，只帮你剥开迷雾。
+                </p>
+
+                <div class="bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50">
+                    <p class="text-slate-300 font-medium mb-4">👈 请在左侧侧边栏选择工具：</p>
+                    <ul class="space-y-4 text-slate-400">
+                        <li class="flex items-start">
+                            <span class="text-red-500 mr-2">1.</span>
+                            <span><b>住房主权量化器</b>：帮你精算“归属感”的真实价格。</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-red-500 mr-2">2.</span>
+                            <span><b>赛博占卜</b>：测测今天的科研与生活运势吧~</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-slate-600 mr-2">3.</span>
+                            <span class="text-slate-600"><b>职场自由度精算</b>：(计划中) 算算你的真实时薪。</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="pt-6">
+                    <p class="text-red-400 italic font-medium">“人生是不确定的，但我们的计算是有趣的。”</p>
+                </div>
+                
+                <!-- 移动端适配按钮（当屏幕小时显示） -->
+                <div class="md:hidden grid grid-cols-2 gap-4 pt-4">
+                    <a href="housing.html" class="bg-slate-800 p-3 rounded-lg text-center text-sm">🏠 住房计算</a>
+                    <a href="divine.html" class="bg-pink-900/30 p-3 rounded-lg text-center text-sm text-pink-400">🔮 赛博占卜</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>
