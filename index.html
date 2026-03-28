@@ -8,35 +8,88 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap');
+        
+        /* 1. 动态渐变背景：增加视觉深度 */
         body { 
             font-family: 'Noto Sans SC', sans-serif; 
-            background-color: #0f172a; 
+            background: radial-gradient(circle at top right, #1e293b, #0f172a, #020617);
+            background-attachment: fixed;
             color: #f1f5f9;
+            scroll-behavior: smooth;
         }
+
+        /* 2. 侧边栏链接：增加悬停位移和发光感 */
+        .sidebar-link {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-left: 3px solid transparent;
+        }
+        
         .sidebar-link:hover {
-            background-color: #1e293b;
-            color: #ef4444;
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #f87171;
+            padding-left: 1.5rem;
+            border-left: 3px solid #ef4444;
         }
+
+        /* 3. 增强版毛玻璃卡片：更通透，带微悬浮感 */
         .glass-card {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        /* 4. 入场动画：页面打开时内容升起 */
+        main {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        @keyframes fadeInUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(20px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+
+        /* 5. 标题流光效果 */
+        .gradient-text {
+            background: linear-gradient(to right, #f1f5f9, #ef4444, #f1f5f9);
+            background-size: 200% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: shine 4s linear infinite;
+        }
+
+        @keyframes shine {
+            to { background-position: 200% center; }
         }
     </style>
 </head>
 <body class="flex min-h-screen">
 
     <!-- 👈 侧边栏导航 -->
-    <aside class="w-72 bg-slate-900 border-r border-slate-800 hidden md:flex flex-col">
+    <aside class="w-72 bg-slate-900 border-r border-slate-800 hidden md:flex flex-col shadow-2xl">
         <div class="p-6">
             <h2 class="text-xl font-bold text-red-500">🛠️ 实验室导航</h2>
         </div>
         <nav class="flex-1 px-4 space-y-2">
-            <a href="index.html" class="block p-3 rounded-lg bg-slate-800 text-red-400 font-bold">🏠 首页介绍</a>
-            <!-- 这里的 href 对应你即将创建的另外两个文件名 -->
-            <a href="housing.html" class="sidebar-link block p-3 rounded-lg text-slate-400 transition">🏠 住房主权量化</a>
-            <a href="divine.html" class="sidebar-link block p-3 rounded-lg text-slate-400 transition">🔮 赛博占卜</a>
-            <div class="p-3 text-slate-600 text-sm cursor-not-allowed">💼 职场自由度 (计划中)</div>
+            <a href="index.html" class="block p-3 rounded-lg bg-slate-800 text-red-400 font-bold shadow-inner">🏠 首页介绍</a>
+            <!-- 链接到独立的功能页 -->
+            <a href="housing.html" class="sidebar-link block p-3 rounded-lg text-slate-400">🏠 住房主权量化</a>
+            <a href="divine.html" class="sidebar-link block p-3 rounded-lg text-slate-400">🔮 赛博占卜</a>
+            <div class="p-3 text-slate-600 text-sm cursor-not-allowed opacity-50 italic">💼 职场自由度 (计划中)</div>
         </nav>
         <div class="p-6 text-xs text-slate-500 border-t border-slate-800">
             © 2024 一名 00 后研究生的实验室
@@ -46,44 +99,46 @@
     <!-- 🏠 主内容区 -->
     <main class="flex-1 p-6 md:p-16 overflow-y-auto">
         <div class="max-w-3xl mx-auto">
-            <h1 class="text-4xl md:text-5xl font-bold mb-2">💡 胡思乱想工具箱</h1>
-            <p class="text-slate-500 mb-8 text-lg">Wild Ideas Toolbox v1.0</p>
+            <h1 class="text-4xl md:text-5xl font-bold mb-2 gradient-text">💡 胡思乱想工具箱</h1>
+            <p class="text-slate-500 mb-8 text-lg font-light tracking-widest">Wild Ideas Toolbox v1.0</p>
             
-            <hr class="border-slate-800 mb-10">
+            <hr class="border-slate-800 mb-10 opacity-30">
 
-            <div class="glass-card p-8 rounded-3xl shadow-2xl space-y-6">
-                <h2 class="text-2xl font-bold text-white">欢迎来到一名 00 后研究生的胡思乱想</h2>
+            <div class="glass-card p-8 rounded-3xl space-y-6">
+                <h2 class="text-2xl font-bold text-white tracking-tight">欢迎来到一名 00 后研究生的胡思乱想</h2>
                 
-                <p class="text-slate-400 leading-relaxed text-lg">
+                <p class="text-slate-400 leading-relaxed text-lg font-light">
                     这里存放着我关于生活的种种稀奇古怪的想法。我们不替你做决策，只帮你剥开迷雾。
                 </p>
 
-                <div class="bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50">
+                <div class="bg-slate-900/50 p-6 rounded-2xl border border-white/5">
                     <p class="text-slate-300 font-medium mb-4">👈 请在左侧侧边栏选择工具：</p>
-                    <ul class="space-y-4 text-slate-400">
-                        <li class="flex items-start">
-                            <span class="text-red-500 mr-2">1.</span>
+                    <ul class="space-y-4 text-slate-400 text-base">
+                        <li class="flex items-start group">
+                            <span class="text-red-500 mr-3 font-bold group-hover:scale-125 transition-transform">1.</span>
                             <span><b>住房主权量化器</b>：帮你精算“归属感”的真实价格。</span>
                         </li>
-                        <li class="flex items-start">
-                            <span class="text-red-500 mr-2">2.</span>
+                        <li class="flex items-start group">
+                            <span class="text-red-500 mr-3 font-bold group-hover:scale-125 transition-transform">2.</span>
                             <span><b>赛博占卜</b>：测测今天的科研与生活运势吧~</span>
                         </li>
-                        <li class="flex items-start">
-                            <span class="text-slate-600 mr-2">3.</span>
+                        <li class="flex items-start group opacity-50">
+                            <span class="text-slate-600 mr-3 font-bold">3.</span>
                             <span class="text-slate-600"><b>职场自由度精算</b>：(计划中) 算算你的真实时薪。</span>
                         </li>
                     </ul>
                 </div>
 
-                <div class="pt-6">
-                    <p class="text-red-400 italic font-medium">“人生是不确定的，但我们的计算是有趣的。”</p>
+                <div class="pt-6 border-t border-white/5">
+                    <p class="text-red-400 italic font-medium opacity-80 uppercase text-sm tracking-widest text-center">
+                        “ 人生是不确定的，但我们的计算是有趣的 ”
+                    </p>
                 </div>
                 
                 <!-- 移动端适配按钮（当屏幕小时显示） -->
                 <div class="md:hidden grid grid-cols-2 gap-4 pt-4">
-                    <a href="housing.html" class="bg-slate-800 p-3 rounded-lg text-center text-sm">🏠 住房计算</a>
-                    <a href="divine.html" class="bg-pink-900/30 p-3 rounded-lg text-center text-sm text-pink-400">🔮 赛博占卜</a>
+                    <a href="housing.html" class="bg-slate-800 p-4 rounded-xl text-center text-sm font-bold active:scale-95 transition-transform">🏠 住房计算</a>
+                    <a href="divine.html" class="bg-pink-900/30 p-4 rounded-xl text-center text-sm text-pink-400 font-bold active:scale-95 transition-transform">🔮 赛博占卜</a>
                 </div>
             </div>
         </div>
