@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏠 住房主权量化器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap');
+        body { font-family: 'Noto Sans SC', sans-serif; background: #0f172a; color: #f1f5f9; }
+        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        input { background: #1e293b !important; color: white !important; border: 1px solid #334155 !important; }
+        .sidebar-link:hover { background-color: #1e293b; color: #ef4444; }
+    </style>
+</head>
+<body class="flex min-h-screen">
+
+    <!-- 👈 侧边栏导航 -->
+    <aside class="w-64 bg-slate-900 border-r border-slate-800 hidden md:flex flex-col">
+        <div class="p-6 text-xl font-bold text-red-500">🛠️ 实验室导航</div>
+        <nav class="flex-1 px-4 mt-4 space-y-2">
+            <a href="index.html" class="sidebar-link block p-3 rounded-lg text-slate-400 transition">🏠 首页介绍</a>
+            <a href="housing.html" class="block p-3 rounded-lg bg-slate-800 text-red-400 font-bold">🏠 住房主权量化</a>
+            <a href="divine.html" class="sidebar-link block p-3 rounded-lg text-slate-400 transition">🔮 赛博占卜</a>
+        </nav>
+    </aside>
+
+    <!-- 🏠 主内容区 -->
+    <main class="flex-1 p-6 md:p-12 overflow-y-auto">
+        <div class="max-w-6xl mx-auto">
+            <h1 class="text-3xl font-bold mb-6 flex items-center">🏠 住房主权量化模型 HSM v3.0</h1>
+
+            <!-- 说明区域 -->
+            <details class="glass-card p-4 rounded-xl mb-8 cursor-pointer" open>
+                <summary class="font-bold text-blue-400">📌 为什么需要这款量化模型？</summary>
+                <div class="mt-4 text-sm text-slate-400 leading-relaxed space-y-2">
+                    <p>将模糊的“归属感”量化为“房产主权价格”。</p>
+                    <p>它诚实地告诉你：为了这份“居住主权”，你正在支付多少代价，以及你的现金流是否足以支撑这份执念。</p>
+                </div>
+            </details>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- 左侧参数配置 -->
+                <div class="glass-card p-6 rounded-2xl h-fit space-y-4">
+                    <h3 class="font-bold text-lg border-b border-slate-700 pb-2">📋 参数配置</h3>
+                    <div class="grid grid-cols-2 gap-4 text-xs">
+                        <div class="space-y-3">
+                            <label>初始现金(万)<input id="total_cash" type="number" value="90" class="w-full p-2 rounded mt-1"></label>
+                            <label>房屋总价(万)<input id="house_price" type="number" value="175" class="w-full p-2 rounded mt-1"></label>
+                            <label>首付(万)<input id="down_payment" type="number" value="52.5" class="w-full p-2 rounded mt-1"></label>
+                            <label>购车款(万)<input id="car_cost" type="number" value="25" class="w-full p-2 rounded mt-1"></label>
+                        </div>
+                        <div class="space-y-3">
+                            <label>贷款年限<input id="loan_years" type="number" value="30" class="w-full p-2 rounded mt-1"></label>
+                            <label>房贷利率(%)<input id="loan_rate" type="number" value="2.6" step="0.1" class="w-full p-2 rounded mt-1"></label>
+                            <label>理财年化(%)<input id="invest_rate" type="number" value="3.0" step="0.1" class="w-full p-2 rounded mt-1"></label>
+                            <label>月租金(元)<input id="rent_market" type="number" value="4000" class="w-full p-2 rounded mt-1"></label>
+                            <label class="hidden">月攒钱<input id="monthly_savings" type="number" value="15000"></label>
+                        </div>
+                    </div>
+                    <button onclick="calculate()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-red-900/20">🚀 开始量化主权</button>
+                </div>
+
+                <!-- 右侧结果展示 -->
+                <div id="results" class="lg:col-span-2 space-y-6 opacity-0 transition-opacity duration-500">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="glass-card p-4 rounded-xl text-center">
+                            <div class="text-xs text-slate-500 mb-1">房产主权价格 (ΔP)</div>
+                            <div id="res-dp" class="text-xl font-bold text-red-400">--</div>
+                        </div>
+                        <div class="glass-card p-4 rounded-xl text-center">
+                            <div class="text-xs text-slate-500 mb-1">现金流安全边际</div>
+                            <div id="res-sm" class="text-xl font-bold text-green-400">--</div>
+                        </div>
+                        <div class="glass-card p-4 rounded-xl text-center">
+                            <div class="text-xs text-slate-500 mb-1">30年主权代价</div>
+                            <div id="res-xt5" class="text-xl font-bold text-blue-400">--</div>
+                        </div>
+                        <div class="glass-card p-4 rounded-xl text-center">
+                            <div class="text-xs text-slate-500 mb-1">30年财富现金差</div>
+                            <div id="res-diff" class="text-xl font-bold text-yellow-400">--</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-yellow-900/20 border border-yellow-700/30 p-4 rounded-xl text-xs text-yellow-200/70">
+                        ⚠️ 重要提示：上述计算仅包含流动性现金资产，未包含房产本身！买房者30年后还额外拥有一套房产。
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="glass-card p-6 rounded-2xl">
+                            <h4 class="font-bold mb-4 flex items-center">💰 成本构成说明</h4>
+                            <div id="detail-text" class="text-sm text-slate-400 space-y-4"></div>
+                        </div>
+                        <div class="glass-card p-6 rounded-2xl">
+                            <h4 class="font-bold mb-4 text-center">📈 财富趋势 (30年后现金对比)</h4>
+                            <canvas id="wealthChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let myChart = null;
+
+        function calculate() {
+            // 获取输入值
+            const A = document.getElementById('total_cash').value * 10000;
+            const house_price = document.getElementById('house_price').value * 10000;
+            const P_down = document.getElementById('down_payment').value * 10000;
+            const P_car = document.getElementById('car_cost').value * 10000;
+            const loan_years = document.getElementById('loan_years').value;
+            const i_loan = (document.getElementById('loan_rate').value / 100) / 12;
+            const i_invest = (document.getElementById('invest_rate').value / 100) / 12;
+            const R_rent = document.getElementById('rent_market').value * 1;
+            const S_save = document.getElementById('monthly_savings').value * 1;
+
+            const L = house_price - P_down;
+            const n = loan_years * 12;
+
+            // 1. 计算月供 M
+            let M = i_loan === 0 ? L / n : (L * i_loan * Math.pow(1 + i_loan, n)) / (Math.pow(1 + i_loan, n) - 1);
+
+            // 2. 机会成本与差额
+            const cash_remaining = A - (P_down + P_car);
+            const income_total = A * i_invest;
+            const income_remaining = cash_remaining * i_invest;
+            
+            const delta_p = (M - income_remaining) - (R_rent - income_total);
+            const safety_margin = S_save - M;
+
+            // 3. 模拟30年财富
+            let balance_buy = cash_remaining;
+            let balance_rent = A;
+            for(let i=0; i<n; i++) {
+                balance_buy = balance_buy * (1 + i_invest) + S_save - M;
+                balance_rent = balance_rent * (1 + i_invest) + S_save - R_rent;
+            }
+
+            // 更新界面
+            document.getElementById('results').style.opacity = 1;
+            document.getElementById('res-dp').innerText = Math.round(delta_p).toLocaleString() + " 元";
+            document.getElementById('res-sm').innerText = Math.round(safety_margin).toLocaleString() + " 元";
+            document.getElementById('res-xt5').innerText = ((delta_p * n) / 300000).toFixed(1) + " 台XT5";
+            document.getElementById('res-diff').innerText = Math.round((balance_buy - balance_rent)/10000) + " 万";
+
+            document.getElementById('detail-text').innerHTML = `
+                <p>1. <b>机会成本牺牲</b>：首付锁死资金导致每月损失约 <b>${Math.round(income_total - income_remaining)}元</b> 的利息。</p>
+                <p>2. <b>硬性差额</b>：月供 <b>${Math.round(M)}元</b> 与租金 <b>${R_rent}元</b> 的博弈。</p>
+                <p>3. <b>主权溢价</b>：你每月为“归属感”支付了 <b>${Math.round(delta_p)}元</b>。</p>
+            `;
+
+            // 绘制图表
+            const ctx = document.getElementById('wealthChart').getContext('2d');
+            if (myChart) myChart.destroy();
+            myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['买房方案(现金)', '租房方案(现金)'],
+                    datasets: [{
+                        label: '期末现金(万)',
+                        data: [balance_buy/10000, balance_rent/10000],
+                        backgroundColor: ['#ef4444', '#3b82f6']
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, grid: { color: '#334155' } } }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
