@@ -6,76 +6,97 @@
     <title>💡 胡思乱想工具箱</title>
     <!-- 使用 Tailwind CSS 快速美化 -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap');
-        
-        /* 1. 动态渐变背景：增加视觉深度 */
-        body { 
-            font-family: 'Noto Sans SC', sans-serif; 
-            background: radial-gradient(circle at top right, #1e293b, #0f172a, #020617);
-            background-attachment: fixed;
-            color: #f1f5f9;
-            scroll-behavior: smooth;
-        }
+   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap');
+    
+    /* 1. 活泼的背景：径向渐变 + 实验室网格纹理 */
+    body { 
+        font-family: 'Noto Sans SC', sans-serif; 
+        background-color: #0f172a;
+        /* 第一层：深色渐变 */
+        background-image: 
+            radial-gradient(circle at 20% 30%, rgba(239, 68, 68, 0.05) 0%, transparent 40%),
+            radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.08) 0%, transparent 40%),
+            /* 第二层：像坐标纸一样的网格线 */
+            linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+        background-attachment: fixed;
+        color: #f1f5f9;
+        scroll-behavior: smooth;
+        position: relative;
+        overflow-x: hidden;
+    }
 
-        /* 2. 侧边栏链接：增加悬停位移和发光感 */
-        .sidebar-link {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border-left: 3px solid transparent;
-        }
-        
-        .sidebar-link:hover {
-            background-color: rgba(239, 68, 68, 0.1);
-            color: #f87171;
-            padding-left: 1.5rem;
-            border-left: 3px solid #ef4444;
-        }
+    /* 2. 个性化装饰：漂浮的半透明圆圈（增加动感） */
+    body::before {
+        content: "";
+        position: fixed;
+        top: -10%;
+        left: -10%;
+        width: 40%;
+        height: 40%;
+        background: radial-gradient(circle, rgba(239, 68, 68, 0.1) 0%, transparent 70%);
+        z-index: -1;
+        animation: float 20s infinite alternate;
+    }
 
-        /* 3. 增强版毛玻璃卡片：更通透，带微悬浮感 */
-        .glass-card {
-            background: rgba(30, 41, 59, 0.4);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            transition: transform 0.3s ease;
-        }
+    @keyframes float {
+        from { transform: translate(0, 0); }
+        to { transform: translate(20vw, 20vh); }
+    }
 
-        .glass-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(239, 68, 68, 0.3);
-        }
+    /* 3. 侧边栏链接优化 */
+    .sidebar-link {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border-left: 3px solid transparent;
+    }
+    
+    .sidebar-link:hover {
+        background-color: rgba(239, 68, 68, 0.1);
+        color: #f87171;
+        padding-left: 1.5rem;
+        border-left: 3px solid #ef4444;
+    }
 
-        /* 4. 入场动画：页面打开时内容升起 */
-        main {
-            animation: fadeInUp 0.8s ease-out forwards;
-        }
+    /* 4. 增强版毛玻璃卡片 */
+    .glass-card {
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s ease, border-color 0.3s ease;
+    }
 
-        @keyframes fadeInUp {
-            from { 
-                opacity: 0; 
-                transform: translateY(20px); 
-            }
-            to { 
-                opacity: 1; 
-                transform: translateY(0); 
-            }
-        }
+    .glass-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(239, 68, 68, 0.4);
+    }
 
-        /* 5. 标题流光效果 */
-        .gradient-text {
-            background: linear-gradient(to right, #f1f5f9, #ef4444, #f1f5f9);
-            background-size: 200% auto;
-            color: transparent;
-            -webkit-background-clip: text;
-            background-clip: text;
-            animation: shine 4s linear infinite;
-        }
+    /* 5. 标题流光效果 */
+    .gradient-text {
+        background: linear-gradient(to right, #ffffff, #ef4444, #ffffff);
+        background-size: 200% auto;
+        color: transparent;
+        -webkit-background-clip: text;
+        background-clip: text;
+        animation: shine 5s linear infinite;
+    }
 
-        @keyframes shine {
-            to { background-position: 200% center; }
-        }
-    </style>
+    @keyframes shine {
+        to { background-position: 200% center; }
+    }
+
+    /* 入场动画 */
+    main {
+        animation: fadeInUp 0.8s ease-out forwards;
+    }
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
 </head>
 <body class="flex min-h-screen">
 
