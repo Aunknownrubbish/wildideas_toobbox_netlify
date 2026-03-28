@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔮 今日研路占卜</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Confetti 库实现类似 Streamlit 的气球效果 -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap');
+        body { font-family: 'Noto Sans SC', sans-serif; background: #0f172a; color: #f1f5f9; overflow-x: hidden; }
+        .sidebar-link:hover { background-color: #1e293b; color: #ef4444; }
+        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        .divine-btn { background: linear-gradient(135deg, #ec4899 0%, #be185d 100%); transition: all 0.3s; }
+        .divine-btn:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(236, 72, 153, 0.4); }
+        .fade-in { animation: fadeIn 0.8s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="flex min-h-screen">
+
+    <!-- 👈 侧边栏导航 -->
+    <aside class="w-64 bg-slate-900 border-r border-slate-800 hidden md:flex flex-col">
+        <div class="p-6 text-xl font-bold text-red-500">🛠️ 实验室导航</div>
+        <nav class="flex-1 px-4 mt-4 space-y-2">
+            <a href="index.html" class="sidebar-link block p-3 rounded-lg text-slate-400 transition">🏠 首页介绍</a>
+            <a href="housing.html" class="sidebar-link block p-3 rounded-lg text-slate-400 transition">🏠 住房主权量化</a>
+            <a href="divine.html" class="block p-3 rounded-lg bg-slate-800 text-pink-400 font-bold">🔮 赛博占卜</a>
+        </nav>
+    </aside>
+
+    <!-- 🏠 主内容区 -->
+    <main class="flex-1 p-6 md:p-12 overflow-y-auto">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-3xl font-bold mb-2">🔮 今日研路：赛博星露谷占卜</h1>
+            <p class="text-slate-500 mb-8 border-b border-slate-800 pb-4 text-sm">“欢迎回来。我是你的占卜师。今天，精灵们会如何看待你的命运呢？”</p>
+
+            <!-- 按钮区 -->
+            <button onclick="startDivine()" class="divine-btn w-full py-6 rounded-3xl text-2xl font-bold text-white mb-10 shadow-xl">
+                🌟 触摸星露谷之石，开启今日运势
+            </button>
+
+            <!-- 默认展示图 (类似 st.image) -->
+            <div id="placeholder-img" class="rounded-3xl overflow-hidden shadow-2xl">
+                <img src="https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?auto=format&fit=crop&q=80&w=1000" class="w-full h-80 object-cover opacity-60">
+                <p class="text-center text-xs text-slate-500 mt-2 italic">等待星光的指引...</p>
+            </div>
+
+            <!-- 结果展示区 -->
+            <div id="result-area" class="hidden space-y-8 fade-in">
+                <!-- 1. 精灵状态卡片 -->
+                <div class="glass-card p-8 rounded-3xl flex flex-col md:flex-row items-center gap-8">
+                    <div id="spirit-icon" class="text-8xl"></div>
+                    <div>
+                        <h2 id="spirit-status" class="text-3xl font-bold text-pink-400 mb-2"></h2>
+                        <p id="spirit-desc" class="text-slate-300 italic"></p>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-bold border-l-4 border-pink-500 pl-4">📜 详细签文</h3>
+                
+                <!-- 2. 三维度展示 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+                    <div class="glass-card p-6 rounded-2xl border-t-4 border-blue-500">
+                        <h4 class="text-blue-400 font-bold mb-3 flex items-center">🔬 学术指引</h4>
+                        <p id="res-f" class="text-slate-300 leading-relaxed"></p>
+                    </div>
+                    <div class="glass-card p-6 rounded-2xl border-t-4 border-green-500">
+                        <h4 class="text-green-400 font-bold mb-3 flex items-center">🍃 生活琐事</h4>
+                        <p id="res-l" class="text-slate-300 leading-relaxed"></p>
+                    </div>
+                    <div class="glass-card p-6 rounded-2xl border-t-4 border-yellow-500">
+                        <h4 class="text-yellow-400 font-bold mb-3 flex items-center">💖 情感波动</h4>
+                        <p id="res-r" class="text-slate-300 leading-relaxed"></p>
+                    </div>
+                </div>
+
+                <hr class="border-slate-800">
+
+                <!-- 3. 玄学加成区 -->
+                <div class="glass-card p-8 rounded-3xl">
+                    <h3 class="text-lg font-bold mb-6 text-pink-300">🧚 精灵小贴士（玄学加成）</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+                        <div class="space-y-2">
+                            <p id="tip-yi" class="text-green-400"></p>
+                            <p id="tip-ji" class="text-red-400"></p>
+                        </div>
+                        <div class="space-y-2">
+                            <p id="tip-color"></p>
+                            <p id="tip-number"></p>
+                        </div>
+                        <div class="space-y-2">
+                            <p id="tip-guardian"></p>
+                            <p class="text-pink-400">✨ <b>隐藏彩蛋</b>：对镜子笑一下，精灵会送你一颗糖🍬</p>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="text-center text-xs text-slate-600 pb-10">“记住，即便精灵不高兴，你依然是自己命运的主宰。”</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const SPIRIT_STATUS = [
+            {status: "大吉", desc: "精灵今天非常高兴！它们会把好运洒向每一个人。", icon: "😇"},
+            {status: "吉", desc: "精灵们心情不错。你会感到运气稍微好了一点。", icon: "😊"},
+            {status: "平", desc: "精灵们今天感觉很中性。一切取决于你自己的努力。", icon: "😐"},
+            {status: "凶", desc: "精灵们今天有些烦躁。可能会有微小的意外发生。", icon: "😟"},
+            {status: "大凶", desc: "精灵们非常不悦！今天最好待在宿舍里，别乱动数据。", icon: "💀"}
+        ];
+
+        const FORTUNES = {
+            "科研": ["跑实验时，进度条会以前所未有的速度拉满。", "导师今天心情大好，看完你的初稿只改了两个错别字。", "显卡风扇的声音听起来像是在为你奏乐。", "Bug 们集体放假，你的程序一次性跑通。", "ArcGIS的进度条今天格外听话，没有卡在99%不动弹🗺️", "跑模型时，loss曲线像坐滑梯一样丝滑下降📉", "组会汇报时，PPT翻页笔一次就连上了✅", "查重率比你预想的低了3个百分点😭"],
+            "生活": ["食堂今天居然有你最爱吃的那道菜，且还没排队。", "你会发现一件丢了很久的卫衣，口袋里居然还有 20 块钱。", "下雨天你没带伞，但一出楼门雨刚好停了。", "手机电量从早撑到晚，直到你躺上床才弹出“电量不足 10%”。", "快递驿站排队时，刚好轮到你时你的快递就到了📦", "宿舍楼下的小猫今天主动蹭了你的裤腿🐱"],
+            "恋爱": ["你的 Crush 会突然给你发一条可爱的表情包。", "对象会突然决定给你点一杯奶茶送到实验室。", "今天走路步伐莫名一致，连影子都在悄悄牵手。", "你随手发的日常，ta居然记得细节🌟", "即使今天没怎么聊天，心里也暖暖的🏮"]
+        };
+
+        const EXTRA_TIPS = {
+            "宜": ["备份数据", "给绿植浇水", "对自己说'今天也很棒'", "摸鱼10分钟回血", "整理文献库", "早睡一小时"],
+            "忌": ["熬夜改论文", "空腹跑代码", "在群里发'在吗'", "和导师硬刚", "盲目调参"],
+            "幸运色": ["实验室白大褂的白", "食堂番茄炒蛋的黄", "星露谷铱星的紫", "代码跑通的草地绿"],
+            "守护精灵": ["代码小精灵🧚‍♂️", "食堂锦鲤🐟", "顺丰速运精灵📦", "咖啡因之神☕"]
+        };
+
+        function startDivine() {
+            // 洒下五彩纸屑 (类似 st.balloons)
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#ec4899', '#3b82f6', '#10b981']
+            });
+
+            // 隐藏占位，展示结果
+            document.getElementById('placeholder-img').classList.add('hidden');
+            const resultArea = document.getElementById('result-area');
+            resultArea.classList.remove('hidden');
+
+            // 随机逻辑
+            const spirit = SPIRIT_STATUS[Math.floor(Math.random() * SPIRIT_STATUS.length)];
+            const f = FORTUNES["科研"][Math.floor(Math.random() * FORTUNES["科研"].length)];
+            const l = FORTUNES["生活"][Math.floor(Math.random() * FORTUNES["生活"].length)];
+            const r = FORTUNES["恋爱"][Math.floor(Math.random() * FORTUNES["恋爱"].length)];
+            
+            const yi = EXTRA_TIPS["宜"].sort(() => .5 - Math.random()).slice(0, 2);
+            const ji = EXTRA_TIPS["忌"][Math.floor(Math.random() * EXTRA_TIPS["忌"].length)];
+            const color = EXTRA_TIPS["幸运色"][Math.floor(Math.random() * EXTRA_TIPS["幸运色"].length)];
+            const guardian = EXTRA_TIPS["守护精灵"][Math.floor(Math.random() * EXTRA_TIPS["守护精灵"].length)];
+
+            // 填充内容
+            document.getElementById('spirit-icon').innerText = spirit.icon;
+            document.getElementById('spirit-status').innerText = "今日运势：" + spirit.status;
+            document.getElementById('spirit-desc').innerText = spirit.desc;
+            
+            document.getElementById('res-f').innerText = f;
+            document.getElementById('res-l').innerText = l;
+            document.getElementById('res-r').innerText = r;
+            
+            document.getElementById('tip-yi').innerHTML = "✅ <b>宜</b>：" + yi.join("、");
+            document.getElementById('tip-ji').innerHTML = "❌ <b>忌</b>：" + ji;
+            document.getElementById('tip-color').innerHTML = "🎨 <b>幸运色</b>：" + color;
+            document.getElementById('tip-number').innerHTML = "🔢 <b>幸运数字</b>：" + Math.floor(Math.random() * 100);
+            document.getElementById('tip-guardian').innerHTML = "🛡️ <b>守护精灵</b>：" + guardian;
+
+            // 滚动到结果区
+            resultArea.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
