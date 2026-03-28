@@ -39,40 +39,74 @@
             border-left: 3px solid #ef4444;
         }
 
-        /* 4. 【核心修改】主内容区背景图适配 */
+        /* 4. 【核心修改区】主内容区背景图适配 */
         main {
             flex-1: 1;
             overflow-y: auto; /* 重要：让内容在这个区域内滚动 */
             position: relative;
             
-            /* --- 背景图片配置 --- */
-            /* linear-gradient 是给图片加一层半透明遮罩，压低亮度，确保文字清晰 */
+            /* --- 默认状态：有深色遮罩 (rgba(15, 23, 42, 0.8)) --- */
             background-image: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.8)), 
                               url('assets/home/bg.jpg'); 
             
-            /* --- 屏幕适配核心属性 --- */
             background-size: cover;      /* 自动缩放以完全覆盖区域，不变形 */
             background-position: center; /* 图片始终居中展示 */
             background-repeat: no-repeat;/* 不要平铺重复 */
-            background-attachment: local;/* 背景随内容滚动（在 main 内部滚动） */
+            background-attachment: local;/* 背景随内容滚动 */
+
+            /* 增加过渡效果，让亮度变化更平滑 */
+            transition: background-image 0.5s ease;
 
             /* 入场动画 */
             animation: fadeInUp 0.8s ease-out forwards;
         }
 
+        /* 【新加 CSS】当点击叉号后，main 会加上这个类，去掉遮罩，复原色调 */
+        main.full-brightness {
+            /* 只有图片，没有 linear-gradient 遮罩 */
+            background-image: url('assets/home/bg.jpg'); 
+        }
+
         /* 5. 增强版毛玻璃卡片 */
         .glass-card {
+            position: relative; /* 为叉号按钮定位做准备 */
             background: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease, border-color 0.3s ease;
+            transition: all 0.3s ease;
+            opacity: 1;
+            visibility: visible;
         }
 
-        .glass-card:hover {
+        /* 【新加 CSS】用于叉掉浮窗的动画效果 */
+        .glass-card.hidden {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-20px) scale(0.95); /* 向上飘散并缩小 */
+            pointer-events: none; /* 防止消失后还能点击到 */
+        }
+
+        .glass-card:hover:not(.hidden) {
             transform: translateY(-4px);
             border-color: rgba(239, 68, 68, 0.4);
+        }
+
+        /* 【新加 CSS】叉号按钮样式 */
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.3s ease;
+            z-index: 20;
+        }
+        .close-btn:hover {
+            color: #ef4444; /* 悬停变红 */
+            transform: rotate(90deg); /* 悬停旋转 */
         }
 
         /* 6. 标题流光效果 */
@@ -112,14 +146,17 @@
         </div>
     </aside>
 
-    <main class="p-6 md:p-16">
+    <main id="main-content" class="p-6 md:p-16">
         <div class="max-w-3xl mx-auto">
             <h1 class="text-4xl md:text-5xl font-bold mb-2 gradient-text">💡 胡思乱想工具箱</h1>
             <p class="text-slate-500 mb-8 text-lg font-light tracking-widest">Wild Ideas Toolbox v1.0</p>
             
             <hr class="border-slate-800 mb-10 opacity-30">
 
-            <div class="glass-card p-8 rounded-3xl space-y-6">
+            <div id="intro-card" class="glass-card p-8 rounded-3xl space-y-6">
+                
+                <div id="close-intro" class="close-btn" title="叉掉介绍，欣赏背景图">×</div>
+
                 <h2 class="text-2xl font-bold text-white tracking-tight">欢迎来到一只不知名的小垃圾的胡思乱想</h2>
                 
                 <p class="text-slate-400 leading-relaxed text-lg font-light">
@@ -157,6 +194,22 @@
             </div>
         </div>
     </main>
+
+    <script>
+        // 1. 获取需要操作的网页元素
+        const closeBtn = document.getElementById('close-intro'); // 叉号按钮
+        const introCard = document.getElementById('intro-card'); // 介绍卡片
+        const mainContent = document.getElementById('main-content'); // 主内容区
+
+        // 2. 定义点击“叉号”后的动作
+        closeBtn.addEventListener('click', function() {
+            // 给卡片加上 .hidden 类（CSS 里定义了让它飘散消失）
+            introCard.classList.add('hidden');
+            
+            // 给 main 加上 .full-brightness 类（CSS 里定义了去掉遮罩）
+            mainContent.classList.add('full-brightness');
+        });
+    </script>
 
 </body>
 </html>
